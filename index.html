@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Muebles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Tipografía más elegante con Cormorant Garamond para títulos */
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            /* Paleta de colores más sofisticada con tonos tierra premium */
+            --color-primary: #8B6F47;
+            --color-secondary: #1A1612;
+            --color-accent: #C9A86A;
+            --color-light: #F8F6F2;
+            --color-neutral: #E5DFD6;
+            --color-gold: #D4AF37;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom, #F8F6F2, #FFFFFF);
+            color: var(--color-secondary);
+        }
+        
+        /* Fuente serif elegante para títulos */
+        h1, h2, h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Animaciones suaves y efectos de entrada */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        .fade-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        /* Botones con degradados y efectos hover mejorados */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+            color: white;
+            padding: 14px 36px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(139, 111, 71, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(139, 111, 71, 0.4);
+        }
+        
+        /* Cards con efectos de sombra sofisticados y bordes sutiles */
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(139, 111, 71, 0.1);
+            position: relative;
+        }
+        
+        .product-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent), var(--color-gold));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 60px rgba(139, 111, 71, 0.2);
+        }
+        
+        .product-card:hover::after {
+            opacity: 1;
+        }
+        
+        /* Imágenes con overlay sutil y zoom al hover */
+        .product-image-wrapper {
+            position: relative;
+            overflow: hidden;
+            height: 320px;
+            background: var(--color-neutral);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .product-card:hover .product-image {
+            transform: scale(1.08);
+        }
+        
+        .product-image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(26, 22, 18, 0.4), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .product-card:hover .product-image-overlay {
+            opacity: 1;
+        }
+        
+        /* Badges más elegantes con efectos de brillo */
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .badge-discount {
+            background: linear-gradient(135deg, #DC2626, #EF4444);
+            color: white;
+        }
+        
+        .badge-new {
+            background: linear-gradient(135deg, #059669, #10B981);
+            color: white;
+        }
+        
+        .badge-stock {
+            background: linear-gradient(135deg, #F59E0B, #FBBF24);
+            color: white;
+        }
+        
+        /* Botones de categoría con efectos de borde animado */
+        .category-btn {
+            padding: 12px 32px;
+            border: 2px solid var(--color-primary);
+            background: transparent;
+            color: var(--color-primary);
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .category-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .category-btn:hover,
+        .category-btn.active {
+            color: white;
+            border-color: var(--color-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 111, 71, 0.25);
+        }
+        
+        .category-btn:hover::before,
+        .category-btn.active::before {
+            opacity: 1;
+        }
+        
+        /* Hero section con overlay mejorado y texto con sombra */
+        .hero-section {
+            background: linear-gradient(135deg, rgba(26, 22, 18, 0.85), rgba(139, 111, 71, 0.75)),
+                        url('/placeholder.svg?height=700&width=1920');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            padding: 140px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, var(--color-light));
+        }
+        
+        .hero-title {
+            font-size: 72px;
+            margin-bottom: 24px;
+            font-weight: 700;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+        }
+        
+        .hero-subtitle {
+            font-size: 22px;
+            margin-bottom: 48px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            font-weight: 300;
+        }
+        
+        /* Grid responsive con mejor espaciado */
+        .grid-products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 40px;
+            padding: 20px;
+        }
+        
+        /* Header con efecto glassmorphism */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 1px solid rgba(139, 111, 71, 0.1);
+        }
+        
+        .nav-link {
+            color: var(--color-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            position: relative;
+            padding-bottom: 4px;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--color-primary);
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Footer elegante con degradado */
+        .footer {
+            background: linear-gradient(135deg, var(--color-secondary), #2A2420);
+            color: white;
+            padding: 60px 40px 30px;
+            margin-top: 100px;
+        }
+        
+        .price-main {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .feature-badge {
+            background: var(--color-neutral);
+            color: var(--color-secondary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        /* Responsivo mejorado */
+        @media (max-width: 768px) {
+            .grid-products {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .hero-title {
+                font-size: 42px;
+            }
+            
+            .hero-subtitle {
+                font-size: 18px;
+            }
+            
+            .nav-desktop {
+                display: none;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .nav-mobile {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div style="max-width: 1400px; margin: 0 auto; padding: 24px 40px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <!-- Nombre de empresa dinámico -->
+                <h1 id="companyName" style="font-size: 36px; color: var(--color-primary); font-weight: 700; margin-bottom: 4px;"></h1>
+                <p style="font-size: 13px; color: var(--color-secondary); opacity: 0.6; letter-spacing: 2px; text-transform: uppercase; font-weight: 500;">Calidad Premium & Diseño</p>
+            </div>
+            <nav class="nav-desktop" style="display: flex; gap: 40px;">
+                <a href="#catalogo" class="nav-link">Catálogo</a>
+                <a href="#categorias" class="nav-link">Categorías</a>
+                <a href="#contacto" class="nav-link">Contacto</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div style="position: relative; z-index: 1;">
+            <h2 class="hero-title fade-in">Transforma tu Espacio</h2>
+            <p class="hero-subtitle fade-in" style="animation-delay: 0.2s;">Descubre nuestra exclusiva colección de muebles artesanales diseñados para crear ambientes únicos y sofisticados</p>
+            <button class="btn-primary fade-in" style="animation-delay: 0.4s;" onclick="document.getElementById('catalogo').scrollIntoView({behavior: 'smooth'})">
+                Explorar Colección
+            </button>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section id="categorias" style="max-width: 1400px; margin: 100px auto 80px; padding: 0 40px;">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <h2 style="font-size: 52px; margin-bottom: 16px; color: var(--color-secondary);">Nuestras Colecciones</h2>
+            <p style="font-size: 18px; color: #6B7280; max-width: 600px; margin: 0 auto;">Explora nuestras categorías cuidadosamente curadas para cada espacio de tu hogar</p>
+        </div>
+        <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 80px;">
+            <button class="category-btn active" onclick="filterProducts('todos')">Todos</button>
+            <button class="category-btn" onclick="filterProducts('sala')">Cuneros</button>
+            <button class="category-btn" onclick="filterProducts('comedor')">Armarios</button>
+            <button class="category-btn" onclick="filterProducts('recamara')">Recámara</button>
+            <button class="category-btn" onclick="filterProducts('oficina')">Tocadores</button>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="catalogo" class="grid-products">
+            <!-- Product 1 -->
+            <div class="product-card" data-category="cuneros">
+                <div class="product-image-wrapper">
+                    <img src="Cuneros/cu1.jpeg" alt="Sofá Moderno Gris" class="product-image">
+                    <div class="product-image-overlay"></div>
+                    <div style="position: absolute; top: 16px; right: 16px; z-index: 10;">
+                        <span class="badge badge-discount">-20%</span>
+                    </div>
+                </div>
+                <div style="padding: 28px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 14px;">
+                        <h3 style="font-size: 26px; font-weight: 600; color: var(--color-secondary);">Cuna Moderna</h3>
+                        <span style="color: #10B981; font-size: 13px; font-weight: 600;">● En stock</span>
+                    </div>
+                    <p style="color: #6B7280; margin-bottom: 20px; line-height: 1.7; font-size: 14px;">Cuna Moderma con cajonera</p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                        <span class="feature-badge">4 cajones</span>
+                        <span class="feature-badge">Madera</span>
+                        <span class="feature-badge">Blanco</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span class="price-main">$12,999</span>
+                            <span style="font-size: 18px; color: #9CA3AF; text-decoration: line-through; margin-left: 10px;">$16,249</span>
+                        </div>
+                        <button class="btn-primary" style="padding: 10px 24px; font-size: 13px;">Ver Detalles</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="product-card" data-category="Cuneros">
+                <div class="product-image-wrapper">
+                    <img src="Cuneros/cu2.jpeg" alt="Mesa Comedor Roble" class="product-image">
+                    <div class="product-image-overlay"></div>
+                    <div style="position: absolute; top: 16px; right: 16px; z-index: 10;">
+                        <span class="badge badge-new">Nuevo</span>
+                    </div>
+                </div>
+                <div style="padding: 28px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 14px;">
+                        <h3 style="font-size: 26px; font-weight: 600; color: var(--color-secondary);">Cuna Moderna</h3>
+                        <span style="color: #10B981; font-size: 13px; font-weight: 600;">● En stock</span>
+                    </div>
+                    <p style="color: #6B7280; margin-bottom: 20px; line-height: 1.7; font-size: 14px;">Cuna moderna con cajonera</p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                        <span class="feature-badge">4 cajones</span>
+                        <span class="feature-badge">Madera</span>
+                        <span class="feature-badge">Blanco,gris</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span class="price-main">$18,500</span>
+                        </div>
+                        <button class="btn-primary" style="padding: 10px 24px; font-size: 13px;">Ver Detalles</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 3 -->
+            <div class="product-card" data-category="Recamaras">
+                <div class="product-image-wrapper">
+                    <img src="Recamaras/re1.jpeg" alt="Cama King Size" class="product-image">
+                    <div class="product-image-overlay"></div>
+                    <div style="position: absolute; top: 16px; right: 16px; z-index: 10;">
+                        <span class="badge badge-discount">-15%</span>
+                    </div>
+                </div>
+                <div style="padding: 28px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 14px;">
+                        <h3 style="font-size: 26px; font-weight: 600; color: var(--color-secondary);">Recamara completa</h3>
+                        <span style="color: #10B981; font-size: 13px; font-weight: 600;">● En stock</span>
+                    </div>
+                    <p style="color: #6B7280; margin-bottom: 20px; line-height: 1.7; font-size: 14px;">Cama con cabecera acolchada en terciopelo  y base de almacenamiento con cajones</p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                        <span class="feature-badge">King Size</span>
+                        <span class="feature-badge">Terciopelo</span>
+                        <span class="feature-badge">Almacenaje</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span class="price-main">$22,950</span>
+                            <span style="font-size: 18px; color: #9CA3AF; text-decoration: line-through; margin-left: 10px;">$27,000</span>
+                        </div>
+                        <button class="btn-primary" style="padding: 10px 24px; font-size: 13px;">Ver Detalles</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 4 -->
+            <div class="product-card" data-category="Recamaras">
+                <div class="product-image-wrapper">
+                    <img src="Recamaras/re2.jpeg" alt="Librero Minimalista" class="product-image">
+                    <div class="product-image-overlay"></div>
+                </div>
+                <div style="padding: 28px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 14px;">
+                        <h3 style="font-size: 26px; font-weight: 600; color: var(--color-secondary);">Recamara aterciopelada</h3>
+                        <span style="color: #10B981; font-size: 13px; font-weight: 600;">● En stock</span>
+                    </div>
+                    <p style="color: #6B7280; margin-bottom: 20px; line-height: 1.7; font-size: 14px;">Cabecera y base aterciopelada</p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                        <span class="feature-badge">Diseño unico</span>
+                        <span class="feature-badge">Gris</span>
+                        <span class="feature-badge">Decoracion abotonada</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span class="price-main">$8,750</span>
+                        </div>
+                        <button class="btn-primary" style="padding: 10px 24px; font-size: 13px;">Ver Detalles</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 5 -->
+            <div class="product-card" data-category="Recamaras">
+                <div class="product-image-wrapper">
+                    <img src="Recamaras/re3.jpeg" alt="Escritorio Ejecutivo" class="product-image">
+                    <div class="product-image-overlay"></div>
+                    <div style="position: absolute; top: 16px; right: 16px; z-index: 10;">
+                        <span class="badge badge-new">Nuevo</span>
+                    </div>
+                </div>
+                <div style="padding: 28px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 14px;">
+                        <h3 style="font-size: 26px; font-weight: 600; color: var(--color-secondary);">Recamara</h3>
+                        <span style="color: #F59E0B; font-size: 13px; font-weight: 600;">● Stock bajo</span>
+                    </div>
+                    <p style="color: #6B7280; margin-bottom: 20px; line-height: 1.7; font-size: 14px;">Base y cabecera </p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                        <span class="feature-badge">Detalles unicos</span>
+                        <span class="feature-badge">Chocolate</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span class="price-main">$14,200</span>
+                        </div>
+                        <button class="btn-primary" style="padding: 10px 24px; font-size: 13px;">Ver Detalles</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 6 -->
+            <div class="product-card" data-category="Recamaras">
+                <div class="product-image-wrapper">
+                    <img src="Recamaras/re4.jpeg" alt="Sillas Comedor Set 6" class="product-image">
+                    <div class="product-image-overlay"></div>
+                    <div style="position: absolute; top: 16px; right: 16px; z-index: 10;">
+                        <span class="badge badge-discount">-25%</span>
+                    </div>
+                </div>
+                <div style="padding: 28px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 14px;">
+                        <h3 style="font-size: 26px; font-weight: 600; color: var(--color-secondary);">Recamara</h3>
+                        <span style="color: #10B981; font-size: 13px; font-weight: 600;">● En stock</span>
+                    </div>
+                    <p style="color: #6B7280; margin-bottom: 20px; line-height: 1.7; font-size: 14px;">Cabecera y base para recamara </p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                        <span class="feature-badge">Botones</span>
+                        <span class="feature-badge">Aterciopelada</span>
+                        <span class="feature-badge">Rosa palo</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span class="price-main">$9,750</span>
+                            <span style="font-size: 18px; color: #9CA3AF; text-decoration: line-through; margin-left: 10px;">$13,000</span>
+                        </div>
+                        <button class="btn-primary" style="padding: 10px 24px; font-size: 13px;">Ver Detalles</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 7 -->
+            <div class="product-card" data-category="Recamaras">
+                <div class="product-image-wrapper">
+                    <img src="Recamaras/re5.jpeg" alt="Armario Ropero" class="product-image">
+                    <div class="product-image-overlay"></div>
+                </div>
+                <div style="padding: 28px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 14px;">
+                        <h3 style="font-size: 26px; font-weight: 600; color: var(--color-secondary);">Cabecera</h3>
+                        <span style="color: #10B981; font-size: 13px; font-weight: 600;">● En stock</span>
+                    </div>
+                    <p style="color: #6B7280; margin-bottom: 20px; line-height: 1.7; font-size: 14px;">Cabecera moderna</p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                        <span class="feature-badge">Vidrio, botones</span>
+                        <span class="feature-badge">Teciopelo</span>
+                        <span class="feature-badge">Blanco, rosa</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span class="price-main">$19,800</span>
+                        </div>
+                        <button class="btn-primary" style="padding: 10px 24px; font-size: 13px;">Ver Detalles</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 8 -->
+            <div class="product-card" data-category="Armarios">
+                <div class="product-image-wrapper">
+                    <img src="Armarios/ar1.jpeg" alt="Silla Ergonómica" class="product-image">
+                    <div class="product-image-overlay"></div>
+                    <div style="position: absolute; top: 16px; right: 16px; z-index: 10;">
+                        <span class="badge badge-discount">-10%</span>
+                    </div>
+                </div>
+                <div style="padding: 28px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 14px;">
+                        <h3 style="font-size: 26px; font-weight: 600; color: var(--color-secondary);">Armario</h3>
+                        <span style="color: #10B981; font-size: 13px; font-weight: 600;">● En stock</span>
+                    </div>
+                    <p style="color: #6B7280; margin-bottom: 20px; line-height: 1.7; font-size: 14px;">Armario de 4 cajones, apartado para ganchos</p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                        <span class="feature-badge">Madera</span>
+                        <span class="feature-badge">Cafe</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span class="price-main">$6,750</span>
+                            <span style="font-size: 18px; color: #9CA3AF; text-decoration: line-through; margin-left: 10px;">$7,500</span>
+                        </div>
+                        <button class="btn-primary" style="padding: 10px 24px; font-size: 13px;">Ver Detalles</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacto" class="footer">
+        <div style="max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 48px; margin-bottom: 40px;">
+            <div>
+                <!-- Nombre de empresa dinámico en footer -->
+                <h3 id="companyNameFooter" style="font-size: 32px; margin-bottom: 16px; color: var(--color-accent);"></h3>
+                <p style="color: rgba(255,255,255,0.8); line-height: 1.6; font-size: 14px;">Transformamos espacios con muebles de alta calidad y diseño excepcional. Más de 20 años de experiencia.</p>
+            </div>
+            <div>
+                <h4 style="font-size: 18px; margin-bottom: 20px; color: white; font-weight: 600;">Navegación</h4>
+                <ul style="list-style: none; line-height: 2.2;">
+                    <li><a href="#catalogo" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--color-accent)'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Catálogo</a></li>
+                    <li><a href="#categorias" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--color-accent)'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Categorías</a></li>
+                    <li><a href="#" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--color-accent)'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Sobre Nosotros</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 18px; margin-bottom: 20px; color: white; font-weight: 600;">Contacto</h4>
+                <ul style="list-style: none; line-height: 2.2; color: rgba(255,255,255,0.8); font-size: 14px;">
+                    <li>📞 +52 (55) 1234-5678</li>
+                    <!-- Email dinámico -->
+                    <li id="companyEmail">📧 info@tuempresa.com</li>
+                    <li>📍 Calle 12 de octubre #33, Hgo.</li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 18px; margin-bottom: 20px; color: white; font-weight: 600;">Horario</h4>
+                <ul style="list-style: none; line-height: 2.2; color: rgba(255,255,255,0.8); font-size: 14px;">
+                    <li>Lun - Vie: 9:00 - 19:00</li>
+                    <li>Sábado: 10:00 - 18:00</li>
+                    <li>Domingo: 11:00 - 15:00</li>
+                </ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; text-align: center;">
+            <!-- Copyright dinámico -->
+            <p id="companyCopyright" style="color: rgba(255,255,255,0.6); font-size: 14px;"></p>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================
+        // ============================================
+        const NOMBRE_EMPRESA = "Mueblería Mostrenco";  // <-- CAMBIA ESTE TEXTO
+        // ============================================
+        
+        // Función para inicializar el nombre de la empresa
+        function inicializarNombreEmpresa() {
+            // Actualizar header
+            document.getElementById('companyName').textContent = NOMBRE_EMPRESA;
+            
+            // Actualizar footer
+            document.getElementById('companyNameFooter').textContent = NOMBRE_EMPRESA;
+            
+            // Actualizar título de la página
+            document.title = `Catálogo de Muebles - ${NOMBRE_EMPRESA}`;
+            
+            // Actualizar email (genera email automáticamente basado en el nombre)
+            const emailSlug = NOMBRE_EMPRESA.toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/\s+/g, "");
+            document.getElementById('companyEmail').textContent = `📧 info@${emailSlug}.com`;
+            
+            // Actualizar copyright
+            const yearActual = new Date().getFullYear();
+            document.getElementById('companyCopyright').textContent = `© ${yearActual} ${NOMBRE_EMPRESA}. Todos los derechos reservados.`;
+        }
+        
+        // Ejecutar al cargar la página
+        inicializarNombreEmpresa();
+        
+        // Filtro de productos
+        function filterProducts(category) {
+            const products = document.querySelectorAll('.product-card');
+            const buttons = document.querySelectorAll('.category-btn');
+            
+            // Actualizar botones activos
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Filtrar productos
+            products.forEach(product => {
+                if (category === 'todos' || product.dataset.category === category) {
+                    product.style.display = 'block';
+                    product.style.animation = 'fadeInUp 0.6s ease-out';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+        }
+        
+        // Animación al hacer scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.product-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
